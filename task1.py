@@ -1,15 +1,13 @@
 # Import necessary libraries
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 # Load the dataset
-data = pd.read_csv('task1/weather_data.csv')
+data = pd.read_csv('weather_data.csv')
 
 # Preprocess the dataset
 # Handle missing values for numeric columns
@@ -23,23 +21,10 @@ data['rain_or_not'].fillna(data['rain_or_not'].mode()[0], inplace=True)
 data['rain_or_not'] = data['rain_or_not'].apply(lambda x: 1 if x == 'Rain' else 0)
 
 # Normalize/Standardize Features
-features_to_scale = ['avg_temperature', 'humidity', 'avg_wind_speed', 'cloud_cover', 'pressure']
+features_to_scale = ['avg_temperature', 'humidity', 'avg_wind_speed']
 scaler = StandardScaler()
 data[features_to_scale] = scaler.fit_transform(data[features_to_scale])
 
-# Exploratory Data Analysis (EDA)
-# Plot the distribution of average temperature
-sns.histplot(data['avg_temperature'], kde=True)
-plt.title('Distribution of Average Temperature')
-plt.show()
-
-# Plot the correlation matrix
-corr = data.corr()
-sns.heatmap(corr, annot=True, cmap='coolwarm')
-plt.title('Correlation Matrix')
-plt.show()
-
-# Train and Evaluate Machine Learning Models
 # Define features and target
 X = data.drop(['date', 'rain_or_not'], axis=1)
 y = data['rain_or_not']
@@ -60,26 +45,13 @@ y_pred = model.predict(X_test)
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print(classification_report(y_test, y_pred))
 
-# Optimize the Model
-# Define the parameter grid
-param_grid = {
-    'n_estimators': [100, 200],
-    'max_depth': [None, 10, 20],
-    'min_samples_split': [2, 5]
-}
+# Predict the next day's rain
+# Assuming the last row in the dataset is the most recent data
+next_day_features = X.iloc[-1].values.reshape(1, -1)
+next_day_prediction = model.predict(next_day_features)
 
-# Initialize GridSearchCV
-grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
-
-# Fit the grid search
-grid_search.fit(X_train, y_train)
-
-# Best parameters
-print("Best parameters found: ", grid_search.best_params_)
-
-# Provide Probability of Rain
-# Get probability predictions
-y_prob = model.predict_proba(X_test)[:, 1]
-
-# Display probabilities
-print("Probability of rain:", y_prob)
+# Output the prediction
+if next_day_prediction[0] == 1:
+    print("It will rain tomorrow.")
+else:
+    print("It will not rain tomorrow.")
