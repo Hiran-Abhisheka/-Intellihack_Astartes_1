@@ -75,7 +75,7 @@ The analysis uses `weather_data.csv`, containing daily weather observations for 
 
 2. Run the main script:
    ```bash
-   python weather_forecasting.py
+   python task1.py
    ```
 
 3. The script will:
