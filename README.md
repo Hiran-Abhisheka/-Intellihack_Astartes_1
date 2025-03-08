@@ -55,8 +55,8 @@ The analysis uses `weather_data.csv`, containing daily weather observations for 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/weather-forecasting.git
-   cd weather-forecasting
+   git clone https://github.com/Hiran-Abhisheka/Intellihack_Astartes_1.git
+   cd Intellihack_Astartes_1
    ```
 
 2. Install the required packages:
